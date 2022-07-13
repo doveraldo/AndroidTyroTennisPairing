@@ -1,11 +1,18 @@
 package com.example.tennispairing
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
 
-class Player {
+class Player() : Parcelable{
 
     var pointsWon: Int = 0
     var gamesWon: Int = 0;
+
+    constructor(parcel: Parcel) : this() {
+        pointsWon = parcel.readInt()
+        gamesWon = parcel.readInt()
+    }
 
     fun restart( ) {
         pointsWon = 0
@@ -50,6 +57,25 @@ class Player {
         when(pointsWon) {
             0, 15, 30, 40 -> pointsWon
             else -> "Adv"
+        }
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(pointsWon)
+        parcel.writeInt(gamesWon)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Player> {
+        override fun createFromParcel(parcel: Parcel): Player {
+            return Player(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Player?> {
+            return arrayOfNulls(size)
         }
     }
 }

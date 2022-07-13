@@ -1,8 +1,16 @@
 package com.example.tennispairing
 
-class Match {
-    val player1 = Player( )
-    val player2 = Player( )
+import android.os.Parcel
+import android.os.Parcelable
+
+class Match() : Parcelable {
+    var player1 = Player()
+    var player2 = Player()
+
+    constructor(parcel: Parcel) : this() {
+        player1 = parcel.readParcelable(Player::class.java.classLoader)?: Player()
+        player2 = parcel.readParcelable(Player::class.java.classLoader)?: Player()
+    }
 
     fun gameAt40All( ) = (player1.at40Points( ) && player2.at40Points( ))
 
@@ -38,5 +46,24 @@ class Match {
     {
         player1.restart( )
         player2.restart( )
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeParcelable(player1, 0)
+        parcel.writeParcelable(player2,0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Match> {
+        override fun createFromParcel(parcel: Parcel): Match {
+            return Match(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Match?> {
+            return arrayOfNulls(size)
+        }
     }
 }
